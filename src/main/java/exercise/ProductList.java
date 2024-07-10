@@ -23,22 +23,31 @@ public class ProductList {
         for (WebElement product : products) {
             String name = product.getText().trim();
             // Remove text after the first occurrence of ' - '
-            int index = name.indexOf(" - ");
-            if (index != -1) {
-                name = name.substring(0, index);
-            }
-
+            name = removeAfter(name, " - ");
+            //check product if equal
             if (list.contains(name)) {
                 product.findElement(By.className("product-action")).click();
                 System.out.println(name);
             }
-            Thread.sleep(200);
+            Thread.sleep(100);
         }
-        driver.findElement(By.className("cart-icon")).click();
-        Thread.sleep(500);
-        driver.findElement(By.className("action-block")).click();
-        Thread.sleep(2000);
+        clickAndWait(driver, By.className("cart-icon"), 500);
+        clickAndWait(driver, By.className("action-block"), 2000);
+        clickAndWait(driver, By.xpath("//button[text()='Place Order']"), 2000);
+        clickAndWait(driver, By.className("chkAgree"), 1000);
+        clickAndWait(driver, By.xpath("//button[text()='Proceed']"), 2000);
         // Close the WebDriver
         driver.quit();
+    }
+    public static String removeAfter(String input, String delimiter) {
+        int index = input.indexOf(delimiter);
+        if (index != -1) {
+            return input.substring(0, index);
+        }
+        return input; // Jika delimiter tidak ditemukan, mengembalikan input asli
+    }
+    public static void clickAndWait(WebDriver driver, By by, long milliseconds) throws InterruptedException {
+        driver.findElement(by).click();
+        Thread.sleep(milliseconds);
     }
 }
